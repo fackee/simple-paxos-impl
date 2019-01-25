@@ -11,13 +11,13 @@ public class ConstansAndUtils {
 
     public static final String HTTP_PREFIXX = "http://";
 
-    public static final String VERSION = "v1";
+    public static final String VERSION = "9090:/v1";
     public static final String API_COMMAND_PREFFIX = "/" + VERSION + "/paxos";
     public static final String API_COMMAND_PREPARE_SEND_PROPOSAL = API_COMMAND_PREFFIX + "/prepare/sendProposal";
     public static final String API_COMMAND_PREPARE_REPLY_PROPOSAL = API_COMMAND_PREFFIX + "/prepare/replyProposal";
 
     public static final String API_COMMAND_APPROVED_SEND_PROPOSAL = API_COMMAND_PREFFIX + "/approved/sendProposal";
-    //public static final String API_COMMAND_PREPARE_REPLY_PROPOSAL = API_COMMAND_PREFFIX + "/prepare/replyProposal";
+
     public static final String API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE = API_COMMAND_PREFFIX + "/approved/replyChosenValue";
     public static final String API_COMMAND_APPROVED_LEARNING = API_COMMAND_PREFFIX + "/approved/learning";
     public static final Long PROCESS_SCHEDILE_INIT_DELAY = 1000L;

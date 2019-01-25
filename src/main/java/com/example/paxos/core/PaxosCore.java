@@ -7,14 +7,12 @@ import com.example.paxos.bean.paxos.Proposal;
 import com.example.paxos.process.AcceptProcess;
 import com.example.paxos.process.ProposalProcess;
 import com.example.paxos.proxy.NodeProxy;
+import com.example.paxos.util.BeanFactory;
 import com.example.paxos.util.thread.Executors;
 import com.example.paxos.util.ConstansAndUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.function.Consumer;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.client.AsyncRestTemplate;
 import java.util.logging.Logger;
 
 public class PaxosCore {
@@ -23,6 +21,7 @@ public class PaxosCore {
 
     public static volatile boolean isInit = false;
 
+    private static final AsyncRestTemplate asyncRestTemplate = BeanFactory.getBean(AsyncRestTemplate.class);
 
     public static void init(){
         System.out.println("====================starting paxos server==================");
@@ -69,19 +68,18 @@ public class PaxosCore {
         if(proposal.getNumber() > ProposalProcess.getCurrentProposedStatus().getLastSendedNumber()){
             ProposalProcess.getCurrentProposedStatus().setLastSendedNumber(proposal.getNumber());
         }
-        WebClient webClient = WebClient.create(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL);
         proposal.setVoteFrom(local.getIp());
-        webClient.post()
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .syncBody(new Message.MessageBuilder<Proposal>()
-                        .setT(proposal)
-                        .setCode(Phase.APPROVE.getCode())
-                        .setMsg(Phase.APPROVE.getPhase()))
-                .retrieve()
-                .bodyToMono(Message.class)
-                .doOnSuccess(message1 -> {})
-                .doOnError((throwable -> {}))
-                .subscribe();
+        HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                .setT(proposal)
+                .setCode(Phase.APPROVE.getCode())
+                .setMsg(Phase.APPROVE.getPhase()).build());
+        asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
+                httpEntity,Message.class)
+                .addCallback((success)->{
+                    PAXOS_CORE_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
+                },(error)->{
+                    PAXOS_CORE_LOGGER.info("send proposal to acceptors fial:" + error.getMessage());
+                });
     }
 
     public static void stopSendProposal(String choosenValue){
@@ -96,20 +94,18 @@ public class PaxosCore {
             return;
         }
         PaxosStore.learning(proposal);
-        WebClient webClient = WebClient.create();
         NodeProxy.NodeProxyInstance.INSTANCE.getInstance().getAllLearner().parallelStream().forEach( learnerNode ->{
-            webClient.mutate().baseUrl(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING);
-            webClient.post()
-                    .accept(MediaType.APPLICATION_JSON_UTF8)
-                    .syncBody(new Message.MessageBuilder<Proposal>()
-                            .setT(proposal)
-                            .setCode(Phase.LEARNING.getCode())
-                            .setMsg(Phase.LEARNING.getPhase()))
-                    .retrieve()
-                    .bodyToMono(Message.class)
-                    .doOnSuccess(message1 -> {})
-                    .doOnError((throwable -> {}))
-                    .subscribe();
+            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                    .setT(proposal)
+                    .setCode(Phase.LEARNING.getCode())
+                    .setMsg(Phase.LEARNING.getPhase()).build());
+            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
+                    httpEntity,Message.class)
+                    .addCallback((success)->{
+                        PAXOS_CORE_LOGGER.info("send learning message to other learner success:" + success.getBody().toString());
+                    },(error)->{
+                        PAXOS_CORE_LOGGER.info("send learning message to other learner fail:" + error.getMessage());
+                    });
         });
     }
 

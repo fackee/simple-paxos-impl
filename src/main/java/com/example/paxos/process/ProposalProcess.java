@@ -5,15 +5,13 @@ import com.example.paxos.bean.common.Message;
 import com.example.paxos.bean.paxos.*;
 import com.example.paxos.exception.OperatorUnSupportException;
 import com.example.paxos.proxy.NodeProxy;
+import com.example.paxos.util.BeanFactory;
 import com.example.paxos.util.ConstansAndUtils;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
+import org.springframework.web.client.AsyncRestTemplate;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class ProposalProcess implements Runnable{
@@ -25,6 +23,8 @@ public class ProposalProcess implements Runnable{
     private static final ProposedStatus CURRENT_PROPOSED_STATUS = new ProposedStatus();
 
     public static volatile boolean needSendProposal = false;
+
+    private final AsyncRestTemplate asyncRestTemplate = BeanFactory.getBean(AsyncRestTemplate.class);
 
     public ProposalProcess(){}
 
@@ -52,22 +52,19 @@ public class ProposalProcess implements Runnable{
         //parallel send proposal to majority acceptors
         CURRENT_PROPOSED_STATUS.setLastSendedNumber(proposal.getNumber());
         CURRENT_PROPOSED_STATUS.setLastSendedValue(proposal.getContent());
+
         nodeProxy.getMojorityAcceptors().parallelStream().forEach( acceptor -> {
-            WebClient webClient = WebClient.create(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL);
-            webClient.post()
-                    .accept(MediaType.APPLICATION_JSON_UTF8)
-                    .syncBody(new Message.MessageBuilder<Proposal>()
-                            .setCode(Phase.PREPARE.getCode())
-                            .setMsg(Phase.PREPARE.getPhase())
-                            .setT(proposal).build())
-                    .retrieve()
-                    .bodyToMono(Message.class)
-                    .doOnSuccess(message1 -> {
-                        System.out.println("==================doOnSuccess" + message1);
-                    })
-                    .doOnError((throwable -> {
-                        System.out.println("==================doOnError" + throwable);
-                    })).subscribe();
+            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                    .setCode(Phase.PREPARE.getCode())
+                    .setMsg(Phase.PREPARE.getPhase())
+                    .setT(proposal).build());
+            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
+                    httpEntity,Message.class)
+                    .addCallback((success)->{
+                        PROPOSAL_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
+                    },(error)->{
+                        PROPOSAL_PROCESS_LOGGER.info("send proposal to acceptors fial:" + error.getMessage());
+                    });
         });
     }
 

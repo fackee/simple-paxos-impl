@@ -7,15 +7,14 @@ import com.example.paxos.bean.paxos.Node;
 import com.example.paxos.bean.paxos.Proposal;
 import com.example.paxos.exception.MessageUnsupportException;
 import com.example.paxos.proxy.NodeProxy;
+import com.example.paxos.util.BeanFactory;
 import com.example.paxos.util.ConstansAndUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class AcceptProcess implements Runnable {
@@ -26,6 +25,8 @@ public class AcceptProcess implements Runnable {
 
     private static final LinkedBlockingQueue<Pair> ACCEPTED_REQUESTS =
             new LinkedBlockingQueue<>();
+
+    final AsyncRestTemplate asyncRestTemplate = BeanFactory.getBean(AsyncRestTemplate.class);
 
     public AcceptProcess() {
     }
@@ -65,10 +66,9 @@ public class AcceptProcess implements Runnable {
                 Phase phase = (Phase) action.getKey();
                 Message message = (Message) action.getValue();
                 Proposal proposal = (Proposal) message.getT();
-                WebClient webClient = null;
                 //PREPARE 阶段处理逻辑
                 if (phase.equals(Phase.PREPARE)) {
-                    webClient = WebClient.create(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL);
+                    HttpEntity httpEntity = HttpEntity.EMPTY;
                     Message<Proposal> replyMessage = new Message<Proposal>(proposal);
                     // 1. 已经chosen，则返回chosen-value
                     if (CURRENT_ACCEPTED_STATUS.hasChosendValue()) {
@@ -78,13 +78,7 @@ public class AcceptProcess implements Runnable {
                         replyProposal.setContent(CURRENT_ACCEPTED_STATUS.getChosenValue());
                         replyProposal.setVoteFrom(local.getIp());
                         replyProposal.setHasChoosen(true);
-                        webClient.post().accept(MediaType.APPLICATION_JSON_UTF8).syncBody(replyMessage)
-                                .retrieve()
-                                .bodyToMono(Message.class)
-                                .doOnSuccess(message1 -> {})
-                                .doOnError((throwable -> {}))
-                                .subscribe();
-                        continue;
+                        httpEntity = new HttpEntity<>(replyMessage);
                     }
                     //2. check lastAccept[number，value]，如果为空，更新lastAccept，即必须接受第一个提案
                     if (CURRENT_ACCEPTED_STATUS.isFirstAcceptProposal()) {
@@ -95,13 +89,7 @@ public class AcceptProcess implements Runnable {
                         BeanUtils.copyProperties(proposal, replyProposal);
                         replyProposal.setVoteFrom(local.getIp());
                         replyMessage.setT(replyProposal);
-                        webClient.post().accept(MediaType.APPLICATION_JSON_UTF8).syncBody(new Message(proposal))
-                                .retrieve()
-                                .bodyToMono(Message.class)
-                                .doOnSuccess(message1 -> {})
-                                .doOnError((throwable -> {}))
-                                .subscribe();
-                        continue;
+                        httpEntity = new HttpEntity<>(replyMessage);
                     }
                     //2. check lastAccept，如果不为空，返回上次accept的提案。
                     if (CURRENT_ACCEPTED_STATUS.getLastAcceptedValue() != null) {
@@ -120,14 +108,16 @@ public class AcceptProcess implements Runnable {
                         replyProposal.setContent(CURRENT_ACCEPTED_STATUS.getLastAcceptedValue());
                         replyProposal.setNumber(CURRENT_ACCEPTED_STATUS.getLastAcceptedNumber());
                         replyProposal.setVoteFrom(local.getIp());
-                        webClient.post().accept(MediaType.APPLICATION_JSON_UTF8).syncBody(replyMessage)
-                                .retrieve()
-                                .bodyToMono(Message.class)
-                                .doOnSuccess(message1 -> {})
-                                .doOnError((throwable -> {}))
-                                .subscribe();
-                        continue;
+                        httpEntity = new HttpEntity<>(replyMessage);
                     }
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL,
+                            httpEntity,Message.class)
+                            .addCallback((success)->{
+                                ACCEPT_PROCESS_LOGGER.info("reply proposal to proposor success:" + success.getBody().toString());
+                            },(error)->{
+                                ACCEPT_PROCESS_LOGGER.info("reply proposal to proposor fial:" + error.getMessage());
+                            });
+
                 }
                 //APPROVE 阶段处理逻辑
                 if (phase.equals(Phase.APPROVE)) {
@@ -135,35 +125,37 @@ public class AcceptProcess implements Runnable {
                     if (CURRENT_ACCEPTED_STATUS.hasChosendValue() && !CURRENT_ACCEPTED_STATUS.getChosenValue().equals(proposal.getContent())) {
                         ACCEPT_PROCESS_LOGGER.warning("!!!!!!!!!!!!!!!!!!!!!!!!the value not consistant!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     }
-                    CURRENT_ACCEPTED_STATUS.setChosenValue(proposal.getContent());
+                    updateCurrentAcceptedStatus(proposal.getContent(),proposal.getNumber(),true);
                     //返回批准的提案
-                    webClient = WebClient.create(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE);
                     proposal.setVoteFrom(local.getIp());
-                    webClient.post()
-                            .accept(MediaType.APPLICATION_JSON_UTF8)
-                            .syncBody(new Message.MessageBuilder<Proposal>()
-                                    .setT(proposal)
-                                    .setCode(200)
-                                    .setMsg("reply chosened value"))
-                            .retrieve()
-                            .bodyToMono(Message.class).doOnSuccess(message1 -> { })
-                            .doOnError((throwable -> {}))
-                            .subscribe();
+                    HttpEntity<Message> approvedEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                            .setT(proposal)
+                            .setCode(Phase.APPROVE.getCode())
+                            .setMsg(Phase.APPROVE.getPhase()).build());
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE,
+                            approvedEntity,Message.class)
+                            .addCallback((success)->{
+                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
+                            },(error)->{
+                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors fial:" + error.getMessage());
+                            });
+
+
 
                     //通知其中一个learner学习
-                    webClient = WebClient.create(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING);
                     proposal.setVoteFrom(local.getIp());
-                    webClient.post()
-                            .accept(MediaType.APPLICATION_JSON_UTF8)
-                            .syncBody(new Message.MessageBuilder<Proposal>()
-                                    .setT(proposal)
-                                    .setCode(Phase.LEARNING.getCode())
-                                    .setMsg(Phase.LEARNING.getPhase()))
-                            .retrieve()
-                            .bodyToMono(Message.class)
-                            .doOnSuccess(message1 -> {})
-                            .doOnError((throwable -> {}))
-                            .subscribe();
+                    HttpEntity<Message> learnerEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                            .setT(proposal)
+                            .setCode(Phase.LEARNING.getCode())
+                            .setMsg(Phase.LEARNING.getPhase()).build());
+
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
+                            learnerEntity,Message.class)
+                            .addCallback((success)->{
+                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
+                            },(error)->{
+                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors fail:" + error.getMessage());
+                            });
                 }
             } catch (InterruptedException e) {
                 ACCEPT_PROCESS_LOGGER.warning("take accepted request from queue exception" + e.getMessage());

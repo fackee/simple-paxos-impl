@@ -2,13 +2,10 @@ package com.example.paxos.core;
 
 import com.example.paxos.bean.paxos.*;
 import com.example.paxos.exception.SystemNotInitException;
-import io.netty.buffer.ByteBuf;
 import org.springframework.util.StringUtils;
-
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;

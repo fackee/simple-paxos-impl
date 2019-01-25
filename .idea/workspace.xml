@@ -2,23 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34a696d8-41d4-45e1-abf7-0237ab6645b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/util/BeanFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/simple-paxos-impl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/simple-paxos-impl.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/PaxosCoreRunning.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/PaxosCoreRunning.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/api/BaseServerRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/api/BaseServerRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/api/router/RouterConfig.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosCore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/process/AcceptProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/process/AcceptProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/server.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/server.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/test/load/Web.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/test/load/Web.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,35 +29,35 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="class" value="8" />
+          <entry key="class" value="16" />
           <entry key="gitignore" value="1" />
-          <entry key="java" value="18" />
+          <entry key="java" value="21" />
           <entry key="properties" value="1" />
           <entry key="xml" value="2" />
-          <entry key="yml" value="2" />
+          <entry key="yml" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CLASS" value="8" />
-          <entry key="JAVA" value="18" />
+          <entry key="CLASS" value="16" />
+          <entry key="JAVA" value="21" />
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="Properties" value="1" />
           <entry key="XML" value="2" />
-          <entry key="YAML" value="2" />
+          <entry key="YAML" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gitignore" value="14" />
-          <entry key="java" value="604" />
+          <entry key="java" value="967" />
           <entry key="xml" value="47" />
           <entry key="yml" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="604" />
+          <entry key="JAVA" value="967" />
           <entry key="PLAIN_TEXT" value="14" />
           <entry key="XML" value="47" />
           <entry key="YAML" value="8" />
@@ -76,41 +68,10 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/server.properties">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/PaxosCoreRunning.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="3" column="90" selection-start-line="3" selection-start-column="90" selection-end-line="3" selection-end-column="90" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/App.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
-              <folding>
-                <element signature="e#345#346#0" expanded="true" />
-                <element signature="e#398#399#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="959">
-              <caret line="102" column="18" lean-forward="true" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
+            <state relative-caret-position="199">
+              <caret line="181" column="21" selection-start-line="181" selection-start-column="21" selection-end-line="181" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -118,19 +79,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret lean-forward="true" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosCore.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
+            <state relative-caret-position="1083">
               <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -142,10 +94,25 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="489">
-              <caret line="34" column="20" lean-forward="true" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+            <state relative-caret-position="35">
+              <caret line="59" column="80" selection-start-line="59" selection-start-column="80" selection-end-line="59" selection-end-column="80" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="47" column="42" selection-start-line="47" selection-start-column="42" selection-end-line="47" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -153,8 +120,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="472">
-              <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+            <state relative-caret-position="166">
+              <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -180,8 +147,13 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>CURRENT_ACCEPTED_STATUS</find>
+      <find>WARNING</find>
       <find>server proper error</find>
+      <find>asyncRestTemplate.postForEntity</find>
     </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/src/main/java/com/example/paxos</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -190,20 +162,20 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/api/BaseServerRequest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/util/BeanFactory.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/process/AcceptProcess.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosCore.java" />
         <option value="$PROJECT_DIR$/src/main/resources/server.properties" />
         <option value="$PROJECT_DIR$/src/test/java/com/test/load/Web.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/App.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.yml" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/PaxosCoreRunning.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java" />
       </list>
     </option>
   </component>
@@ -243,6 +215,61 @@
               <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
               <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="paxos" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="paxos" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="paxos" type="462c0819:PsiDirectoryNode" />
+              <item name="process" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simple-paxos-impl" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="simple-paxos-impl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -260,7 +287,7 @@
     <property name="RequestMappingsPanelWidth2" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
@@ -342,16 +369,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1548374709177</updated>
-      <workItem from="1548402372751" duration="4505000" />
+      <workItem from="1548402372751" duration="6800000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4505000" />
+    <option name="totallyTimeSpent" value="6800000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="990" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Designer" />
       <window_info id="UI Designer" />
@@ -360,10 +386,10 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Spring" />
-      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32941177" />
+      <window_info anchor="bottom" id="Terminal" weight="0.32941177" />
       <window_info anchor="bottom" id="Docker" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" weight="0.32902467" />
-      <window_info anchor="bottom" id="Messages" weight="0.32941177" />
+      <window_info active="true" anchor="bottom" id="Messages" visible="true" weight="0.32941177" />
       <window_info anchor="bottom" id="Java Enterprise" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" />
@@ -421,16 +447,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="29" column="45" selection-start-line="29" selection-start-column="45" selection-end-line="29" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.0.5.RELEASE/spring-web-5.0.5.RELEASE.jar!/org/springframework/web/client/AsyncRestTemplate.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -467,23 +483,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="66" column="23" selection-start-line="60" selection-start-column="12" selection-end-line="66" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/server.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot/1.5.18.RELEASE/spring-boot-1.5.18.RELEASE.jar!/org/springframework/boot/context/event/ApplicationStartingEvent.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -495,38 +494,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
           <caret line="31" column="21" lean-forward="true" selection-start-column="2" selection-end-line="33" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/App.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#345#346#0" expanded="true" />
-            <element signature="e#398#399#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="489">
-          <caret line="34" column="20" lean-forward="true" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
         </state>
       </provider>
     </entry>
@@ -551,6 +518,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+          <folding>
+            <element signature="e#345#346#0" expanded="true" />
+            <element signature="e#398#399#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/PaxosCoreRunning.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
@@ -558,9 +543,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/server.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="181" column="21" selection-start-line="181" selection-start-column="21" selection-end-line="181" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="489">
+          <caret line="34" column="20" lean-forward="true" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosCore.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
+        <state relative-caret-position="1083">
           <caret line="112" column="28" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -570,20 +586,82 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/core/PaxosStore.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/util/ConstansAndUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="959">
-          <caret line="102" column="18" lean-forward="true" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
+        <state relative-caret-position="166">
+          <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.3.21.RELEASE/spring-web-4.3.21.RELEASE.jar!/org/springframework/http/HttpEntity.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="27" column="67" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="67" />
+          <folding>
+            <element signature="e#508#509#0" expanded="true" />
+            <element signature="e#555#556#0" expanded="true" />
+            <element signature="e#619#620#0" expanded="true" />
+            <element signature="e#662#663#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/4.3.21.RELEASE/spring-core-4.3.21.RELEASE.jar!/org/springframework/util/MultiValueMap.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.3.21.RELEASE/spring-web-4.3.21.RELEASE.jar!/org/springframework/http/HttpMethod.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="10" column="12" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.3.21.RELEASE/spring-web-4.3.21.RELEASE.jar!/org/springframework/http/HttpRange.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="21" column="22" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.3.21.RELEASE/spring-web-4.3.21.RELEASE.jar!/org/springframework/http/MediaType.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="26" column="22" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.3.21.RELEASE/spring-web-4.3.21.RELEASE.jar!/org/springframework/http/HttpHeaders.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1638">
+          <caret line="667" column="24" selection-start-line="667" selection-start-column="24" selection-end-line="667" selection-end-column="24" />
+          <folding>
+            <element signature="e#23706#23707#0" expanded="true" />
+            <element signature="e#23763#23764#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/process/ProposalProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="35">
+          <caret line="59" column="80" selection-start-line="59" selection-start-column="80" selection-end-line="59" selection-end-column="80" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/paxos/api/PaxosCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret lean-forward="true" />
+        <state relative-caret-position="390">
+          <caret line="47" column="42" selection-start-line="47" selection-start-column="42" selection-end-line="47" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

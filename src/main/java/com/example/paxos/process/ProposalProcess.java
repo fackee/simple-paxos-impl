@@ -8,6 +8,10 @@ import com.example.paxos.proxy.NodeProxy;
 import com.example.paxos.util.BeanFactory;
 import com.example.paxos.util.ConstansAndUtils;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.AsyncRestTemplate;
 import java.util.Arrays;
@@ -54,11 +58,11 @@ public class ProposalProcess implements Runnable{
         CURRENT_PROPOSED_STATUS.setLastSendedValue(proposal.getContent());
 
         nodeProxy.getMojorityAcceptors().parallelStream().forEach( acceptor -> {
-            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Message>()
                     .setCode(Phase.PREPARE.getCode())
                     .setMsg(Phase.PREPARE.getPhase())
                     .setT(proposal).build());
-            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
+            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
                     httpEntity,Message.class)
                     .addCallback((success)->{
                         PROPOSAL_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());

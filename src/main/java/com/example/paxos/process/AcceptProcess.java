@@ -110,7 +110,7 @@ public class AcceptProcess implements Runnable {
                         replyProposal.setVoteFrom(local.getIp());
                         httpEntity = new HttpEntity<>(replyMessage);
                     }
-                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL,
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL,
                             httpEntity,Message.class)
                             .addCallback((success)->{
                                 ACCEPT_PROCESS_LOGGER.info("reply proposal to proposor success:" + success.getBody().toString());
@@ -132,7 +132,7 @@ public class AcceptProcess implements Runnable {
                             .setT(proposal)
                             .setCode(Phase.APPROVE.getCode())
                             .setMsg(Phase.APPROVE.getPhase()).build());
-                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE,
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE,
                             approvedEntity,Message.class)
                             .addCallback((success)->{
                                 ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
@@ -149,7 +149,7 @@ public class AcceptProcess implements Runnable {
                             .setCode(Phase.LEARNING.getCode())
                             .setMsg(Phase.LEARNING.getPhase()).build());
 
-                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
                             learnerEntity,Message.class)
                             .addCallback((success)->{
                                 ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());

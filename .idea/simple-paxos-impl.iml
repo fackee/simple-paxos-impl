@@ -82,5 +82,6 @@
     <orderEntry type="library" name="Maven: org.mortbay.jasper:apache-el:8.0.33" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.5" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.29" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
   </component>
 </module>

@@ -73,7 +73,7 @@ public class PaxosCore {
                 .setT(proposal)
                 .setCode(Phase.APPROVE.getCode())
                 .setMsg(Phase.APPROVE.getPhase()).build());
-        asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
+        asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
                 httpEntity,Message.class)
                 .addCallback((success)->{
                     PAXOS_CORE_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
@@ -99,7 +99,7 @@ public class PaxosCore {
                     .setT(proposal)
                     .setCode(Phase.LEARNING.getCode())
                     .setMsg(Phase.LEARNING.getPhase()).build());
-            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
+            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
                     httpEntity,Message.class)
                     .addCallback((success)->{
                         PAXOS_CORE_LOGGER.info("send learning message to other learner success:" + success.getBody().toString());

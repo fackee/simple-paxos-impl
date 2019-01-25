@@ -18,7 +18,7 @@ public class PaxosStore {
 
     private static final String NODES_PROPETIES_SPLIT = ";";
 
-    private static final String PROPETIES_LINE_SPLIT = "\r\n";
+    private static final String PROPETIES_LINE_SPLIT = "\n";
 
     private static final String PROPETIES_NODES_START_WORD = "nodes";
 

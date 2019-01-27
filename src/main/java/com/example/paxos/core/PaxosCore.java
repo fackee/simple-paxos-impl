@@ -76,9 +76,9 @@ public class PaxosCore {
         asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
                 httpEntity,Message.class)
                 .addCallback((success)->{
-                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors success in approved:" + success.getBody().toString());
+                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors success in approved:");
                 },(error)->{
-                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors fail in approved:" + error.getMessage());
+                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors fail in approved:");
                 });
     }
 
@@ -103,9 +103,9 @@ public class PaxosCore {
                 asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
                         httpEntity,Message.class)
                         .addCallback((success)->{
-                            PAXOS_CORE_LOGGER.info("send learning message to other learner success:" + success.getBody().toString());
+                            PAXOS_CORE_LOGGER.info("send learning message to other learner success:");
                         },(error)->{
-                            PAXOS_CORE_LOGGER.info("send learning message to other learner fail:" + error.getMessage());
+                            PAXOS_CORE_LOGGER.info("send learning message to other learner fail:");
                         });
             }
         });

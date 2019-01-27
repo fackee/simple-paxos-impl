@@ -35,7 +35,7 @@ public class ProposalProcess implements Runnable{
     @Override
     public void run() {
         if(!needSendProposal){
-            PROPOSAL_PROCESS_LOGGER.info("don't need send proposal now");
+            //PROPOSAL_PROCESS_LOGGER.info("don't need send proposal now");
             return;
         }
         final NodeProxy nodeProxy = NodeProxy.NodeProxyInstance.INSTANCE.getInstance();
@@ -65,9 +65,9 @@ public class ProposalProcess implements Runnable{
             asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
                     httpEntity,Message.class)
                     .addCallback((success)->{
-                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors success:" + success.getBody().toString());
+                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors success");
                     },(error)->{
-                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors fial:" + error.getMessage());
+                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors fial");
                     });
         });
     }

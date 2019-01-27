@@ -115,9 +115,9 @@ public class AcceptProcess implements Runnable {
                     asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL,
                             httpEntity, Message.class)
                             .addCallback((success) -> {
-                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor success:" + success.getBody().toString());
+                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor success:");
                             }, (error) -> {
-                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor fail:" + error.getMessage());
+                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor fail:");
                             });
 
                 }
@@ -137,9 +137,9 @@ public class AcceptProcess implements Runnable {
                     asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE,
                             approvedEntity, Message.class)
                             .addCallback((success) -> {
-                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor success:" + success.getBody().toString());
+                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor success:");
                             }, (error) -> {
-                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor fail:" + error.getMessage());
+                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor fail:");
                             });
 
 
@@ -155,9 +155,9 @@ public class AcceptProcess implements Runnable {
                     asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerRandom.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
                             learnerEntity, Message.class)
                             .addCallback((success) -> {
-                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner success:" + success.getBody().toString());
+                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner success:");
                             }, (error) -> {
-                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner fail:" + error.getMessage());
+                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner fail:");
                             });
                 }
             } catch (InterruptedException e) {

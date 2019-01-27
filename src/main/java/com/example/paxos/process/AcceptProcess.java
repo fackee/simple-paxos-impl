@@ -12,9 +12,12 @@ import com.example.paxos.util.ConstansAndUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.AsyncRestTemplate;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
 public class AcceptProcess implements Runnable {
@@ -69,7 +72,7 @@ public class AcceptProcess implements Runnable {
                 //PREPARE 阶段处理逻辑
                 if (phase.equals(Phase.PREPARE)) {
                     HttpEntity httpEntity = HttpEntity.EMPTY;
-                    Message<Proposal> replyMessage = new Message<Proposal>(proposal);
+                    Message<Proposal> replyMessage = new Message<>(proposal);
                     // 1. 已经chosen，则返回chosen-value
                     if (CURRENT_ACCEPTED_STATUS.hasChosendValue()) {
                         replyMessage.setMessage(Phase.APPROVE.getPhase());
@@ -97,7 +100,6 @@ public class AcceptProcess implements Runnable {
                         if (CURRENT_ACCEPTED_STATUS.greaterThanLastProposalNumber(proposal.getNumber())) {
                             updateCurrentAcceptedStatus(null, proposal.getNumber(), false);
                         }
-
                     }
                     if (CURRENT_ACCEPTED_STATUS.greaterThanLastProposalNumber(proposal.getNumber())) {
                         //更新提案number，返回上次接受的提案
@@ -111,11 +113,11 @@ public class AcceptProcess implements Runnable {
                         httpEntity = new HttpEntity<>(replyMessage);
                     }
                     asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL,
-                            httpEntity,Message.class)
-                            .addCallback((success)->{
-                                ACCEPT_PROCESS_LOGGER.info("reply proposal to proposor success:" + success.getBody().toString());
-                            },(error)->{
-                                ACCEPT_PROCESS_LOGGER.info("reply proposal to proposor fial:" + error.getMessage());
+                            httpEntity, Message.class)
+                            .addCallback((success) -> {
+                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor success:" + success.getBody().toString());
+                            }, (error) -> {
+                                ACCEPT_PROCESS_LOGGER.info("PREPARE: reply proposal to proposor fail:" + error.getMessage());
                             });
 
                 }
@@ -125,7 +127,7 @@ public class AcceptProcess implements Runnable {
                     if (CURRENT_ACCEPTED_STATUS.hasChosendValue() && !CURRENT_ACCEPTED_STATUS.getChosenValue().equals(proposal.getContent())) {
                         ACCEPT_PROCESS_LOGGER.warning("!!!!!!!!!!!!!!!!!!!!!!!!the value not consistant!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     }
-                    updateCurrentAcceptedStatus(proposal.getContent(),proposal.getNumber(),true);
+                    updateCurrentAcceptedStatus(proposal.getContent(), proposal.getNumber(), true);
                     //返回批准的提案
                     proposal.setVoteFrom(local.getIp());
                     HttpEntity<Message> approvedEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
@@ -133,28 +135,29 @@ public class AcceptProcess implements Runnable {
                             .setCode(Phase.APPROVE.getCode())
                             .setMsg(Phase.APPROVE.getPhase()).build());
                     asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE,
-                            approvedEntity,Message.class)
-                            .addCallback((success)->{
-                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
-                            },(error)->{
-                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors fial:" + error.getMessage());
+                            approvedEntity, Message.class)
+                            .addCallback((success) -> {
+                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor success:" + success.getBody().toString());
+                            }, (error) -> {
+                                ACCEPT_PROCESS_LOGGER.info("APPROVED: reply proposal to proposor fail:" + error.getMessage());
                             });
 
 
-
                     //通知其中一个learner学习
-                    proposal.setVoteFrom(local.getIp());
+                    proposal.setHasChoosen(true);
                     HttpEntity<Message> learnerEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
                             .setT(proposal)
                             .setCode(Phase.LEARNING.getCode())
                             .setMsg(Phase.LEARNING.getPhase()).build());
 
-                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
-                            learnerEntity,Message.class)
-                            .addCallback((success)->{
-                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
-                            },(error)->{
-                                ACCEPT_PROCESS_LOGGER.info("send proposal to acceptors fail:" + error.getMessage());
+                    Node[] learners = NodeProxy.NodeProxyInstance.INSTANCE.getInstance().getAllLearner().toArray(new Node[]{});
+                    Node learnerRandom = learners[ThreadLocalRandom.current().nextInt(learners.length)];
+                    asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerRandom.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
+                            learnerEntity, Message.class)
+                            .addCallback((success) -> {
+                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner success:" + success.getBody().toString());
+                            }, (error) -> {
+                                ACCEPT_PROCESS_LOGGER.info("LEARNING: send proposal to other learner fail:" + error.getMessage());
                             });
                 }
             } catch (InterruptedException e) {

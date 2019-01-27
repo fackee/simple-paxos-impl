@@ -88,4 +88,13 @@ public class Message<T> {
             return this.message;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "t=" + t.toString() +
+                ", message='" + message + '\'' +
+                ", code=" + code +
+                '}';
+    }
 }

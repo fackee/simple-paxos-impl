@@ -1,34 +1,29 @@
 package com.example.paxos.api;
 
+import com.alibaba.fastjson.TypeReference;
 import com.example.paxos.bean.Phase;
 import com.example.paxos.bean.common.Message;
 import com.example.paxos.bean.paxos.Proposal;
 import com.example.paxos.core.PaxosCore;
 import com.example.paxos.exception.UnKnowPhaseException;
 import com.example.paxos.util.ConstansAndUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 @RestController
-public class PaxosCommand {
+public class PaxosCommand extends BaseServerRequest{
 
     private static final Logger PAXOS_COMMAND_LOGGER = Logger.getLogger("paxos-command-logger");
 
 
     @PostMapping(value = ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL)
-    public Message sendProposal(HttpServletRequest request ,Message message, HttpServletResponse response) throws IOException {
-        ServletInputStream inputStream = request.getInputStream();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        IOUtils.copy(inputStream,outputStream);
-        System.out.println("======" + outputStream.toByteArray());
+    public Message sendProposal(@RequestBody String jsonString, HttpServletResponse response) {
+        Message<Proposal> message = parser(jsonString,new TypeReference<Message<Proposal>>(){});
         if(Message.isEmpty(message)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -49,8 +44,9 @@ public class PaxosCommand {
     }
 
 
-    @RequestMapping(value = ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL)
-    public Message replyProposal(Message message, HttpServletResponse response){
+    @PostMapping(value = ConstansAndUtils.API_COMMAND_PREPARE_REPLY_PROPOSAL)
+    public Message replyProposal(@RequestBody String jsonString, HttpServletResponse response){
+        Message<Proposal> message = parser(jsonString,new TypeReference<Message<Proposal>>(){});
         if(Message.isEmpty(message)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -70,8 +66,9 @@ public class PaxosCommand {
     }
 
 
-    @RequestMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL)
-    public Message approvedSendProposal(Message message, HttpServletResponse response){
+    @PostMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL)
+    public Message approvedSendProposal(@RequestBody String jsonString, HttpServletResponse response){
+        Message<Proposal> message = parser(jsonString,new TypeReference<Message<Proposal>>(){});
         if(Message.isEmpty(message)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -92,8 +89,9 @@ public class PaxosCommand {
     }
 
 
-    @RequestMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE)
-    public Message replyChosenValue(Message message, HttpServletResponse response){
+    @PostMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_REPLY_CHOSENED_VALUE)
+    public Message replyChosenValue(@RequestBody String jsonString, HttpServletResponse response){
+        Message<Proposal> message = parser(jsonString,new TypeReference<Message<Proposal>>(){});
         if(Message.isEmpty(message)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
@@ -104,8 +102,9 @@ public class PaxosCommand {
     }
 
 
-    @RequestMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_LEARNING)
-    public Message learning(Message message, HttpServletResponse response){
+    @PostMapping(value = ConstansAndUtils.API_COMMAND_APPROVED_LEARNING)
+    public Message learning(@RequestBody String jsonString, HttpServletResponse response){
+        Message<Proposal> message = parser(jsonString,new TypeReference<Message<Proposal>>(){});
         if(Message.isEmpty(message)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;

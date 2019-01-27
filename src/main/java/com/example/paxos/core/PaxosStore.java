@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ public class PaxosStore {
 
     private static final String NODES_PROPETIES_SPLIT = ";";
 
-    private static final String PROPETIES_LINE_SPLIT = "\n";
+    private static final String PROPETIES_LINE_SPLIT = "\r\n";
 
     private static final String PROPETIES_NODES_START_WORD = "nodes";
 
@@ -29,6 +30,8 @@ public class PaxosStore {
     private static final String PROPETIES_LEARNER_START_WORD = "learner";
 
     private static final String CLUSTER_PROPERTIES = "src/main/resources/server.properties";
+
+    private static final String LEARNING_RECORD = "src/main/resources/learning.log";
 
     private static final Cluster CLUSTER = new Cluster();
 
@@ -51,12 +54,11 @@ public class PaxosStore {
     }
 
     private static synchronized boolean loadClusterNodes(){
-        ByteBuffer byteBuffer;
         FileChannel fileChannel = null;
         File serverPropertiesFile = new File(CLUSTER_PROPERTIES);
         try(FileInputStream fileInputStream = new FileInputStream(serverPropertiesFile)) {
             fileChannel = fileInputStream.getChannel();
-            byteBuffer = ByteBuffer.allocate((int) serverPropertiesFile.length());
+            final ByteBuffer byteBuffer = ByteBuffer.allocate((int) serverPropertiesFile.length());
             fileChannel.read(byteBuffer);
             String properties = new String(byteBuffer.array(),"UTF-8");
             if(StringUtils.isEmpty(properties)){
@@ -200,5 +202,34 @@ public class PaxosStore {
     }
 
     public static void learning(Proposal proposal) {
+        Executors.newFixedThreadPool(5,runnable -> {
+            Thread thread = new Thread(runnable);
+            thread.setName("record-learning-thread");
+            thread.setPriority(Thread.NORM_PRIORITY);
+            return thread;
+        }).execute(()->{
+            persistenceRecord(proposal);
+        });
+    }
+
+    private static synchronized void persistenceRecord(Proposal proposal){
+        File recordLog = new File(LEARNING_RECORD);
+        if(!recordLog.exists()){
+            try {
+                recordLog.createNewFile();
+            } catch (IOException e) {
+                PAXOS_STORE_LOGGER.warning("create record record file exception" + e.getMessage());
+            }
+        }
+        recordLog.setWritable(true);
+        String appendRecord = new String(proposal.toString() + "\n");
+        try(FileOutputStream outputStream = new FileOutputStream(recordLog,true)) {
+            outputStream.write(appendRecord.getBytes("UTF-8"));
+            outputStream.flush();
+        } catch (FileNotFoundException e) {
+            PAXOS_STORE_LOGGER.warning("record file not exists" + e.getMessage());
+        } catch (IOException e) {
+            PAXOS_STORE_LOGGER.warning("write record to log exception" + e.getMessage());
+        }
     }
 }

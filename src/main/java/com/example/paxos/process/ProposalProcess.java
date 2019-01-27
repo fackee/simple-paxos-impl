@@ -58,16 +58,16 @@ public class ProposalProcess implements Runnable{
         CURRENT_PROPOSED_STATUS.setLastSendedValue(proposal.getContent());
 
         nodeProxy.getMojorityAcceptors().parallelStream().forEach( acceptor -> {
-            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Message>()
+            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                    .setT(proposal)
                     .setCode(Phase.PREPARE.getCode())
-                    .setMsg(Phase.PREPARE.getPhase())
-                    .setT(proposal).build());
+                    .setMsg(Phase.PREPARE.getPhase()).build());
             asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
                     httpEntity,Message.class)
                     .addCallback((success)->{
-                        PROPOSAL_PROCESS_LOGGER.info("send proposal to acceptors success:" + success.getBody().toString());
+                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors success:" + success.getBody().toString());
                     },(error)->{
-                        PROPOSAL_PROCESS_LOGGER.info("send proposal to acceptors fial:" + error.getMessage());
+                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors fial:" + error.getMessage());
                     });
         });
     }

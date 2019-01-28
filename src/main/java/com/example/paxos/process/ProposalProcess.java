@@ -7,22 +7,16 @@ import com.example.paxos.exception.OperatorUnSupportException;
 import com.example.paxos.proxy.NodeProxy;
 import com.example.paxos.util.BeanFactory;
 import com.example.paxos.util.ConstansAndUtils;
+import com.example.paxos.util.LogUtil;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.AsyncRestTemplate;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 public class ProposalProcess implements Runnable{
 
     private static final AtomicInteger numberCounter = new AtomicInteger(0);
-
-    private static final Logger PROPOSAL_PROCESS_LOGGER = Logger.getLogger("proposal-process");
 
     private static final ProposedStatus CURRENT_PROPOSED_STATUS = new ProposedStatus();
 
@@ -44,19 +38,19 @@ public class ProposalProcess implements Runnable{
             throw new OperatorUnSupportException("this role:" + Arrays.toString(nodeProxy.getLocalServer().getRole().getRoleTypes().toArray()) + "cannot proposal vote");
         }
         Proposal proposal = new Proposal();
-        // acceptors hase choosened a value
-        if(!StringUtils.isEmpty(nodeProxy.choosenedValue())){
-            proposal.setContent(nodeProxy.choosenedValue());
-        }
         //global increment number
         proposal.setNumber(nodeProxy.getLocalServer().getNodeNumber() + numberCounter.incrementAndGet());
         //the single value in cluter is ip,choosen the value like electron a leader
         proposal.setContent(nodeProxy.getLocalServer().getIp());
         proposal.setVoteFrom(nodeProxy.getLocalServer().getIp());
-        //parallel send proposal to majority acceptors
+        // acceptors had choosened a value
+        if(!StringUtils.isEmpty(nodeProxy.choosenedValue())){
+            proposal.setContent(nodeProxy.choosenedValue());
+        }
         CURRENT_PROPOSED_STATUS.setLastSendedNumber(proposal.getNumber());
         CURRENT_PROPOSED_STATUS.setLastSendedValue(proposal.getContent());
 
+        //parallel send proposal to majority acceptors
         nodeProxy.getMojorityAcceptors().parallelStream().forEach( acceptor -> {
             HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
                     .setT(proposal)
@@ -65,9 +59,9 @@ public class ProposalProcess implements Runnable{
             asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + acceptor.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL,
                     httpEntity,Message.class)
                     .addCallback((success)->{
-                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors success");
+                        LogUtil.info("PREPARE: send proposal to acceptors success");
                     },(error)->{
-                        PROPOSAL_PROCESS_LOGGER.info("PREPARE: send proposal to acceptors fial");
+                        LogUtil.error("PREPARE: send proposal to acceptors fail");
                     });
         });
     }

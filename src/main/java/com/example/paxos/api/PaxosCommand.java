@@ -7,19 +7,14 @@ import com.example.paxos.bean.paxos.Proposal;
 import com.example.paxos.core.PaxosCore;
 import com.example.paxos.exception.UnKnowPhaseException;
 import com.example.paxos.util.ConstansAndUtils;
+import com.example.paxos.util.LogUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 @RestController
 public class PaxosCommand extends BaseServerRequest{
-
-    private static final Logger PAXOS_COMMAND_LOGGER = Logger.getLogger("paxos-command-logger");
-
 
     @PostMapping(value = ConstansAndUtils.API_COMMAND_PREPARE_SEND_PROPOSAL)
     public Message sendProposal(@RequestBody String jsonString, HttpServletResponse response) {
@@ -96,8 +91,6 @@ public class PaxosCommand extends BaseServerRequest{
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
-        PAXOS_COMMAND_LOGGER.info("choosened value:" + message.toString());
-        PaxosCore.stopSendProposal(((Proposal)message.getT()).getContent());
         return new Message.MessageBuilder<>().setCode(200).build();
     }
 

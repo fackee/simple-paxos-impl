@@ -2,6 +2,8 @@ package com.example.paxos.core;
 
 import com.example.paxos.bean.paxos.*;
 import com.example.paxos.exception.SystemNotInitException;
+import com.example.paxos.util.ConstansAndUtils;
+import com.example.paxos.util.LogUtil;
 import org.springframework.util.StringUtils;
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -13,13 +15,13 @@ import java.util.logging.Logger;
 
 public class PaxosStore {
 
-    private static final Logger PAXOS_STORE_LOGGER = Logger.getLogger("paxos-store");
-
     private static final String NODES_PROPETIES_EQU = "=";
 
     private static final String NODES_PROPETIES_SPLIT = ";";
 
-    private static final String PROPETIES_LINE_SPLIT = "\r\n";
+    private static final String IP_PORT_SPLIT = ":";
+
+    private static final String PROPETIES_LINE_SPLIT = System.lineSeparator();
 
     private static final String PROPETIES_NODES_START_WORD = "nodes";
 
@@ -29,9 +31,9 @@ public class PaxosStore {
 
     private static final String PROPETIES_LEARNER_START_WORD = "learner";
 
-    private static final String CLUSTER_PROPERTIES = "src/main/resources/server.properties";
+    private static final String CLUSTER_PROPERTIES = "./config/server.conf";
 
-    private static final String LEARNING_RECORD = "src/main/resources/learning.log";
+    private static final String LEARNING_RECORD = "./logs/learning.log";
 
     private static final Cluster CLUSTER = new Cluster();
 
@@ -62,7 +64,7 @@ public class PaxosStore {
             fileChannel.read(byteBuffer);
             String properties = new String(byteBuffer.array(),"UTF-8");
             if(StringUtils.isEmpty(properties)){
-                PAXOS_STORE_LOGGER.log(Level.WARNING,"server properties can not be empyt");
+                LogUtil.error("server properties can not be empty");
                 return false;
             }
             try {
@@ -93,21 +95,21 @@ public class PaxosStore {
                     assignRoleCustom(nodes,proposor,acceptor,learner);
                 }
             }catch (Exception e){
-                PAXOS_STORE_LOGGER.log(Level.WARNING,"nodes list properties is illegal:" + properties);
+                LogUtil.error("nodes list properties is illegal:" + properties);
                 return false;
             }
         } catch (FileNotFoundException e) {
-            PAXOS_STORE_LOGGER.log(Level.WARNING,e.getMessage());
+            LogUtil.error(e.getMessage());
             return false;
         } catch (IOException e) {
-            PAXOS_STORE_LOGGER.log(Level.WARNING,e.getMessage());
+            LogUtil.error(e.getMessage());
             return false;
         }finally {
             if(fileChannel != null){
                 try {
                     fileChannel.close();
                 } catch (IOException e) {
-                    PAXOS_STORE_LOGGER.log(Level.WARNING,e.getMessage());
+                    LogUtil.info(e.getMessage());
                     return false;
                 }
             }
@@ -119,13 +121,14 @@ public class PaxosStore {
         try {
             String[] nodeArray = nodes.substring(nodes.indexOf(PROPETIES_NODES_START_WORD+NODES_PROPETIES_EQU)).split(NODES_PROPETIES_SPLIT);
             for(String nodeStr : nodeArray){
-                Node node = new Node();
-                node.setIp(nodeStr);
-                node.setRole(new Role(true));
-                CLUSTER.addNode(node);
+                if(!nodeStr.contains(IP_PORT_SPLIT)){
+                    LogUtil.error("server proper error:{}" + System.lineSeparator() + nodes);
+                    System.exit(0);
+                }
+                CLUSTER.addNode(parse(nodeStr,null));
             }
         }catch (Exception e){
-            PAXOS_STORE_LOGGER.warning("server proper error:" + nodes);
+            LogUtil.error("server proper error:{}" + System.lineSeparator() + nodes);
             System.exit(0);
         }
     }
@@ -140,7 +143,7 @@ public class PaxosStore {
             boolean propertiesIsLegal = (nodeNumber >= proposorNumber && nodeNumber >= acceptorNumber && nodeNumber >= learnerNumber)
                     || (nodeNumber > proposorNumber + acceptorNumber + learnerNumber);
             if(!propertiesIsLegal){
-                PAXOS_STORE_LOGGER.warning("server proper error:" + nodes + "\n"
+                LogUtil.error("server proper error:{}" + nodes + "\n"
                         + proposor + "\n"
                         + acceptor + "\n"
                         + learner);
@@ -153,10 +156,7 @@ public class PaxosStore {
                         Node assignedNode = CLUSTER.getNodeByIp(nodeArray[nodeIndex++%nodeNumber]);
                         assignedNode.getRole().addRoleType(RoleType.PROPOSER);
                     }else{
-                        Node prosasorNode = new Node();
-                        prosasorNode.setIp(nodeArray[nodeIndex++%nodeNumber]);
-                        prosasorNode.setRole(new Role(RoleType.PROPOSER));
-                        CLUSTER.addNode(prosasorNode);
+                        CLUSTER.addNode(parse(nodeArray[nodeIndex++%nodeNumber],new Role(RoleType.PROPOSER)));
                     }
                     continue;
                 }
@@ -165,10 +165,7 @@ public class PaxosStore {
                         Node assignedNode = CLUSTER.getNodeByIp(nodeArray[nodeIndex++%nodeNumber]);
                         assignedNode.getRole().addRoleType(RoleType.ACCEPTOR);
                     }else{
-                        Node acceptorNode = new Node();
-                        acceptorNode.setIp(nodeArray[nodeIndex++%nodeNumber]);
-                        acceptorNode.setRole(new Role(RoleType.ACCEPTOR));
-                        CLUSTER.addNode(acceptorNode);
+                        CLUSTER.addNode(parse(nodeArray[nodeIndex++%nodeNumber],new Role(RoleType.ACCEPTOR)));
                     }
                     continue;
                 }
@@ -177,18 +174,15 @@ public class PaxosStore {
                         Node assignedNode = CLUSTER.getNodeByIp(nodeArray[nodeIndex++%nodeNumber]);
                         assignedNode.getRole().addRoleType(RoleType.LEANER);
                     }else{
-                        Node leanerNode = new Node();
-                        leanerNode.setIp(nodeArray[nodeIndex++%nodeNumber]);
-                        leanerNode.setRole(new Role(RoleType.LEANER));
-                        CLUSTER.addNode(leanerNode);
+                        CLUSTER.addNode(parse(nodeArray[nodeIndex++%nodeNumber],new Role(RoleType.LEANER)));
                     }
                     continue;
                 }
             }
         }catch (Exception e){
-            PAXOS_STORE_LOGGER.warning("server proper error:" + nodes + "\n"
-                    + proposor + "\n"
-                    + acceptor + "\n"
+            LogUtil.error("server proper error:{}" + nodes + "\n"
+                    + proposor + PROPETIES_LINE_SPLIT
+                    + acceptor + PROPETIES_LINE_SPLIT
                     + learner);
             System.exit(0);
         }
@@ -199,6 +193,19 @@ public class PaxosStore {
             throw new SystemNotInitException("paxos system not already initailed");
         }
        return CLUSTER;
+    }
+
+    private static Node parse(String nodeStr,Role role){
+        if(!nodeStr.contains(IP_PORT_SPLIT)){
+            LogUtil.error("node must like this : ip:port");
+            System.exit(0);
+        }
+        Node node = new Node();
+        node.setIp(nodeStr.split(IP_PORT_SPLIT)[0]);
+        node.setPort(nodeStr.split(IP_PORT_SPLIT)[1]);
+        ConstansAndUtils.PORT = ":" + nodeStr.split(IP_PORT_SPLIT)[1];
+        node.setRole(role == null?new Role(true):role);
+        return node;
     }
 
     public static void learning(Proposal proposal) {
@@ -218,18 +225,19 @@ public class PaxosStore {
             try {
                 recordLog.createNewFile();
             } catch (IOException e) {
-                PAXOS_STORE_LOGGER.warning("create record record file exception" + e.getMessage());
+                LogUtil.error("create record record file exception" + e.getMessage());
             }
         }
         recordLog.setWritable(true);
         String appendRecord = new String(proposal.toString() + "\n");
+        LogUtil.learning("LEARNING-RECORD:{}", appendRecord);
         try(FileOutputStream outputStream = new FileOutputStream(recordLog,true)) {
             outputStream.write(appendRecord.getBytes("UTF-8"));
             outputStream.flush();
         } catch (FileNotFoundException e) {
-            PAXOS_STORE_LOGGER.warning("record file not exists" + e.getMessage());
+            LogUtil.error("record file not exists" + e.getMessage());
         } catch (IOException e) {
-            PAXOS_STORE_LOGGER.warning("write record to log exception" + e.getMessage());
+            LogUtil.error("write record to log exception" + e.getMessage());
         }
     }
 }

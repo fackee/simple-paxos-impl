@@ -34,7 +34,7 @@ public class Cluster {
     }
 
     public Node getNodeByIp(String ip){
-        return NODE_MAP.get(ip);
+        return NODE_MAP.get(ip.split(":")[0]);
     }
 
     public Set<Node> getAllNode(){

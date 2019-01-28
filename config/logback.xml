@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="1000" debug="false">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="default-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss}|%msg%n</pattern>
+        </layout>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>./logs/default-%d{yyyyMMdd}-%i.log</FileNamePattern>
+            <MaxHistory>7</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="default-async-appender" class="ch.qos.logback.classic.AsyncAppender">
+
+        <discardingThreshold>20</discardingThreshold>
+
+        <queueSize>1000</queueSize>
+
+        <appender-ref ref="default-appender"/>
+    </appender>
+
+    <appender name="learning-appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Append>true</Append>
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss}|%msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>./logs/learning-%d{yyyyMMdd}-%i.log</FileNamePattern>
+            <MaxHistory>60</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="learning-async-appender" class="ch.qos.logback.classic.AsyncAppender">
+
+        <discardingThreshold>20</discardingThreshold>
+
+        <queueSize>1000</queueSize>
+
+        <appender-ref ref="learning-appender"/>
+    </appender>
+
+    <root level="error" additivity="false">
+        <appender-ref ref="default-async-appender"/>
+    </root>
+
+    <logger name="LEARNING-LOG" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="learning-async-appender"/>
+    </logger>
+
+    <logger name="DEFAULT-LOG" additivity="false">
+        <level value="error"/>
+        <appender-ref ref="default-async-appender"/>
+    </logger>
+
+</configuration>

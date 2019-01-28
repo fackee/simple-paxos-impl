@@ -43,6 +43,9 @@ public class NodeProxy {
         return allNode;
     }
 
+    public Node getNodeByIp(String ip){
+        return PaxosStore.getClusterInfo().getNodeByIp(ip);
+    }
 
     public Set<Node> getMojorityAcceptors() {
         Set<Node> nodeSet = new HashSet<>(16);

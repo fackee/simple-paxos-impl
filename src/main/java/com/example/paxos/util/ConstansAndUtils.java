@@ -13,7 +13,7 @@ public class ConstansAndUtils {
 
     public static final String VERSION = "/v1";
     public static final String API_COMMAND_PREFFIX = VERSION + "/paxos";
-    public static final String PORT = ":9090";
+    public static volatile String PORT = ":9090";
     public static final String API_COMMAND_PREPARE_SEND_PROPOSAL = API_COMMAND_PREFFIX + "/prepare/sendProposal";
     public static final String API_COMMAND_PREPARE_REPLY_PROPOSAL = API_COMMAND_PREFFIX + "/prepare/replyProposal";
 

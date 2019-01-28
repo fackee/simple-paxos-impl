@@ -8,24 +8,33 @@ import com.example.paxos.process.AcceptProcess;
 import com.example.paxos.process.ProposalProcess;
 import com.example.paxos.proxy.NodeProxy;
 import com.example.paxos.util.BeanFactory;
+import com.example.paxos.util.LogUtil;
 import com.example.paxos.util.thread.Executors;
 import com.example.paxos.util.ConstansAndUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.AsyncRestTemplate;
-import java.util.logging.Logger;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PaxosCore {
-
-    private static final Logger PAXOS_CORE_LOGGER = Logger.getLogger(PaxosCore.class.getSimpleName());
 
     public static volatile boolean isInit = false;
 
     private static final AsyncRestTemplate asyncRestTemplate = BeanFactory.getBean(AsyncRestTemplate.class);
 
+    private static AtomicInteger RECIVED_PROPOSAL_FROM_ACCEPTOR = new AtomicInteger(0);
+
     public static void init(){
         if(loadClusterInfo()){
             isInit = true;
+        }
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         ProposalProcess.needSendProposal = true;
         Executors.electionSchedule();
@@ -39,17 +48,14 @@ public class PaxosCore {
     }
 
     public static void reviceProposalFromAcceptor(Phase phase,Message message){
-        Node local = NodeProxy.NodeProxyInstance.INSTANCE.getInstance().getLocalServer();
+        NodeProxy nodeProxy = NodeProxy.NodeProxyInstance.INSTANCE.getInstance();
+        Node local = nodeProxy.getLocalServer();
 
         if(!local.getRole().isProposer()){
-            PAXOS_CORE_LOGGER.warning("");
+            LogUtil.info("role error");
             return;
         }
         Proposal proposal = (Proposal) message.getT();
-        if(!local.getIp().equals(proposal.getVoteFrom())){
-            PAXOS_CORE_LOGGER.warning("");
-            return;
-        }
         //选票逻辑判断
         //阶段校验
         if(!phase.equals(Phase.PREPARE)){
@@ -68,18 +74,21 @@ public class PaxosCore {
             ProposalProcess.getCurrentProposedStatus().setLastSendedNumber(proposal.getNumber());
         }
         proposal.setVoteFrom(local.getIp());
-        HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
-                .setT(proposal)
-                .setCode(Phase.APPROVE.getCode())
-                .setMsg(Phase.APPROVE.getPhase())
-                .build());
-        asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
-                httpEntity,Message.class)
-                .addCallback((success)->{
-                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors success in approved:");
-                },(error)->{
-                    PAXOS_CORE_LOGGER.info("APPROVED: send proposal to acceptors fail in approved:");
-                });
+        if(RECIVED_PROPOSAL_FROM_ACCEPTOR.incrementAndGet() >= nodeProxy.getMojorityAcceptors().size()){
+            LogUtil.info("get reply proposal form acceptor more than majority");
+            HttpEntity<Message> httpEntity = new HttpEntity<>(new Message.MessageBuilder<Proposal>()
+                    .setT(proposal)
+                    .setCode(Phase.APPROVE.getCode())
+                    .setMsg(Phase.APPROVE.getPhase())
+                    .build());
+            asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + proposal.getVoteFrom() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_SEND_PROPOSAL,
+                    httpEntity,Message.class)
+                    .addCallback((success)->{
+                        LogUtil.info("APPROVED: send proposal to acceptors success");
+                    },(error)->{
+                        LogUtil.error("APPROVED: send proposal to acceptors fail");
+                    });
+        }
     }
 
     public static void stopSendProposal(String choosenValue){
@@ -90,7 +99,7 @@ public class PaxosCore {
     public static void learning(Proposal proposal){
         Node local = NodeProxy.NodeProxyInstance.INSTANCE.getInstance().getLocalServer();
         if(!local.getRole().isLearner()){
-            PAXOS_CORE_LOGGER.warning("current role isn't a learner,can't learning");
+            LogUtil.error("current role isn't a learner,can't learning");
             return;
         }
         PaxosStore.learning(proposal);
@@ -103,9 +112,9 @@ public class PaxosCore {
                 asyncRestTemplate.postForEntity(ConstansAndUtils.HTTP_PREFIXX + learnerNode.getIp() + ConstansAndUtils.PORT + ConstansAndUtils.API_COMMAND_APPROVED_LEARNING,
                         httpEntity,Message.class)
                         .addCallback((success)->{
-                            PAXOS_CORE_LOGGER.info("send learning message to other learner success:");
+                            LogUtil.info("send learning message to other learner success");
                         },(error)->{
-                            PAXOS_CORE_LOGGER.info("send learning message to other learner fail:");
+                            LogUtil.error("send learning message to other learner fail");
                         });
             }
         });
